@@ -1,12 +1,47 @@
-import React from "react";
-
-import Logo from "../../../public/Images/OLX-Symbol.png";
-import "./Signup.css";
+import React, { useContext, useState } from "react";
+import Logo from "/Images/OLX-Symbol.png";
+import { FirebaseContext } from "../../firebase/FirebaseContext";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
 
 export default function Signup() {
-  const handleSumbit = (e)=>{
-     e.preventDefault()
-  }
+  const { auth, db } = useContext(FirebaseContext);
+  const [user, setUser] = useState({
+    username: "",
+    email: "",
+    phone: "",
+    password: "",
+  });
+
+  const handleSumbit = async (e) => {
+    e.preventDefault();
+    try {
+      const doc = await createUserWithEmailAndPassword(
+        auth,
+        user.email,
+        user.password
+      );
+      if(doc){
+        await updateProfile(doc.user,{displayName:user.username})
+        const userAdd = await addDoc(collection(db,'user'),{
+          id:doc.user.uid,
+          username:user.username,
+          phone:user.phone
+        })
+        if(userAdd){
+          alert('registration complete')
+        }
+      }
+    } catch (error) {
+      alert(error)
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser((prev) => ({ ...prev, [name]: value }));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
@@ -22,8 +57,11 @@ export default function Signup() {
             </label>
             <input
               type="text"
+              name="username"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter username"
+              value={user.username}
+              onChange={handleChange}
             />
           </div>
 
@@ -33,8 +71,11 @@ export default function Signup() {
             </label>
             <input
               type="email"
+              name="email"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter email"
+              value={user.email}
+              onChange={handleChange}
             />
           </div>
 
@@ -44,8 +85,11 @@ export default function Signup() {
             </label>
             <input
               type="tel"
+              name="phone"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter phone number"
+              value={user.phone}
+              onChange={handleChange}
             />
           </div>
 
@@ -55,12 +99,18 @@ export default function Signup() {
             </label>
             <input
               type="password"
+              name="password"
               className="mb-3 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Create password"
+              value={user.password}
+              onChange={handleChange}
             />
           </div>
 
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+          >
             Sign Up
           </button>
         </form>
