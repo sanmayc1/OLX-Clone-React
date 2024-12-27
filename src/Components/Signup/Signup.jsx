@@ -1,45 +1,47 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import Logo from "/Images/OLX-Symbol.png";
 import { FirebaseContext } from "../../firebase/FirebaseContext";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
-import {useNavigate} from 'react-router-dom'
-import { UserContext } from "../../context/context";
-
+import { useNavigate } from "react-router-dom";
+import ReactLoading from "react-loading"
 
 export default function Signup() {
-  const {userD} = useContext(UserContext);
   const { auth, db } = useContext(FirebaseContext);
-  const navigate  = useNavigate();
+  const [loading,setLoading]=useState(false)
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     username: "",
     email: "",
     phone: "",
     password: "",
   });
-  
+
+  // Signup logic
   const handleSumbit = async (e) => {
     e.preventDefault();
+    setLoading(true)
     try {
       const doc = await createUserWithEmailAndPassword(
         auth,
         user.email,
         user.password
       );
-      if(doc){
-        await updateProfile(doc.user,{displayName:user.username})
-        const userAdd = await addDoc(collection(db,'user'),{
-          id:doc.user.uid,
-          username:user.username,
-          phone:user.phone
-        })
-        if(userAdd){
-          
-          navigate('/login')
+      if (doc) {
+        await updateProfile(doc.user, { displayName: user.username });
+        const userAdd = await addDoc(collection(db, "user"), {
+          id: doc.user.uid,
+          username: user.username,
+          phone: user.phone,
+        });
+        if (userAdd) {
+          setLoading(false)
+          navigate("/login");
         }
       }
     } catch (error) {
-      alert(error)
+      alert(error);
+      setLoading(false)
     }
   };
 
@@ -115,17 +117,19 @@ export default function Signup() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            disabled={loading}
+            className="flex justify-center w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
           >
-            Sign Up
+             {loading?<ReactLoading type="spin" color="#ffff" height={25} width={30} />:"SignUp"}
           </button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-600" onClick={()=>navigate('/login')}>
+        <p
+          className="mt-4 text-center text-sm text-gray-600"
+          onClick={() => navigate("/login")}
+        >
           Already have an account?{" "}
-          <span className="text-blue-600 hover:text-blue-800" >
-            Log in
-          </span>
+          <span className="text-blue-600 hover:text-blue-800">Log in</span>
         </p>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { useContext } from "react";
 import "./Create.css";
 import { useState } from "react";
 import { FirebaseContext } from "../../firebase/FirebaseContext";
@@ -6,29 +6,24 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { addDoc, collection } from "firebase/firestore";
 import { UserContext } from "../../context/context";
 import { useNavigate } from "react-router-dom";
+import Cato from "./cateogories";
+import ReactLoading from "react-loading"
 
 const Create = () => {
   const { storage, db } = useContext(FirebaseContext);
-  const { userD } = useContext(UserContext);
+  const { userD } = useContext(UserContext); // authenticated User
   const navigate = useNavigate();
+  const [loading,setLoading]=useState(false)
+  const categories = Cato;
+  const date = new Date();
 
+  //for input filed values
   const [formData, setFormData] = useState({
     name: "",
     category: "",
     price: "",
     image: null,
   });
-
-  const categories = [
-    "Electronics",
-    "Vehicles",
-    "Property",
-    "Furniture",
-    "Fashion",
-    "Books",
-    "Sports",
-    "Others",
-  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,10 +41,10 @@ const Create = () => {
     }));
   };
 
-  const date = new Date();
-
+  //Form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true)
     if (formData.image) {
       const storageRef = ref(storage, `images/${formData.image.name}`);
       try {
@@ -65,10 +60,12 @@ const Create = () => {
             uid: userD.uid,
           });
           if (addProduct) {
+            setLoading(false)
             navigate("/");
           }
         }
       } catch (error) {
+        setLoading(false)
         console.log(error);
       }
     }
@@ -133,7 +130,11 @@ const Create = () => {
 
           <div>
             {formData.image && (
-              <img src={URL.createObjectURL(formData.image)} alt="" />
+              <img
+                src={URL.createObjectURL(formData.image)}
+                alt=""
+                width={150}
+              />
             )}
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Product Image
@@ -149,9 +150,10 @@ const Create = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            disabled={loading}
+            className="flex justify-center w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
           >
-            Post Ad
+            {loading?<ReactLoading type="spin" color="#ffff" height={25} width={30} />:"Post Ad"}
           </button>
         </form>
       </div>

@@ -1,7 +1,6 @@
 .headerParentDiv {
   padding: 10px;
   background-color: whitesmoke;
-  position: fixed;
   width: 100vw;
   z-index: 999;
 }
@@ -85,8 +84,7 @@
 }
 
 .language span {
-  /* justify-content: space-between;
-  align-items: center; */
+  
   font-size: 15px;
   white-space: normal;
   text-overflow: ellipsis;

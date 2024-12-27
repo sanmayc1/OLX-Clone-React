@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 
-import './Footer.css';
+import "./Footer.css";
 
 function Footer() {
   return (
     <div className="footerParentDiv">
       <div className="content">
         <div>
-          <div className="heading">
+          <div className="Fheading">
             <p>POPULAR LOCATIONS</p>
           </div>
           <div className="list">
@@ -20,7 +20,7 @@ function Footer() {
           </div>
         </div>
         <div>
-          <div className="heading">
+          <div className="Fheading">
             <p>ABOUT US</p>
           </div>
           <div className="list">
@@ -33,7 +33,7 @@ function Footer() {
           </div>
         </div>
         <div>
-          <div className="heading">
+          <div className="Fheading">
             <p>OLX</p>
           </div>
           <div className="list">

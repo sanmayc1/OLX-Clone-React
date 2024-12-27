@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import "./Header.css";
 import OlxLogo from "../../assets/OlxLogo";
 import Search from "../../assets/Search";
-import Arrow from "../../assets/Arrow";
 import SellButton from "../../assets/SellButton";
 import SellButtonPlus from "../../assets/SellButtonPlus";
 import { useNavigate } from "react-router-dom";
@@ -44,7 +43,6 @@ function Header() {
         <div className="placeSearch">
           <Search></Search>
           <input type="text" />
-          <Arrow></Arrow>
         </div>
         <div className="productSearch">
           <div className="input">
