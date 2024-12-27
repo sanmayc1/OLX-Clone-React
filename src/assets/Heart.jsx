@@ -6,8 +6,7 @@ export default function Heart() {
         width="24px"
         height="24px"
         viewBox="0 0 1024 1024"
-        data-aut-id="icon"
-        className
+        data-aut-id="icon"  
         fillRule="evenodd"
       >
         <path

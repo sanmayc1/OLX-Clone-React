@@ -1,18 +1,23 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Logo from "/Images/OLX-Symbol.png";
 import { FirebaseContext } from "../../firebase/FirebaseContext";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
+import {useNavigate} from 'react-router-dom'
+import { UserContext } from "../../context/context";
+
 
 export default function Signup() {
+  const {userD} = useContext(UserContext);
   const { auth, db } = useContext(FirebaseContext);
+  const navigate  = useNavigate();
   const [user, setUser] = useState({
     username: "",
     email: "",
     phone: "",
     password: "",
   });
-
+  
   const handleSumbit = async (e) => {
     e.preventDefault();
     try {
@@ -29,7 +34,8 @@ export default function Signup() {
           phone:user.phone
         })
         if(userAdd){
-          alert('registration complete')
+          
+          navigate('/login')
         }
       }
     } catch (error) {
@@ -115,11 +121,11 @@ export default function Signup() {
           </button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
+        <p className="mt-4 text-center text-sm text-gray-600" onClick={()=>navigate('/login')}>
           Already have an account?{" "}
-          <a href="#" className="text-blue-600 hover:text-blue-800">
+          <span className="text-blue-600 hover:text-blue-800" >
             Log in
-          </a>
+          </span>
         </p>
       </div>
     </div>

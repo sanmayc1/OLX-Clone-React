@@ -1,17 +1,19 @@
 import { initializeApp } from "firebase/app";
 import{getAuth} from 'firebase/auth';
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCNChDShsTTINawjDlcpG0JSxoJQ9XfBbo",
-    authDomain: "olx-clone-2ac34.firebaseapp.com",
-    projectId: "olx-clone-2ac34",
-    storageBucket: "olx-clone-2ac34.firebasestorage.app",
-    messagingSenderId: "991091732834",
-    appId: "1:991091732834:web:d1ed4930c2f312762dfc3b",
-    measurementId: "G-FEZFQP4ZNE"
+  apiKey: "AIzaSyDSsQ_8I-7_pindfZsUrTli2lNPWeKQPX8",
+  authDomain: "olx-clone-b8127.firebaseapp.com",
+  projectId: "olx-clone-b8127",
+  storageBucket: "olx-clone-b8127.firebasestorage.app",
+  messagingSenderId: "1032466508609",
+  appId: "1:1032466508609:web:780e62abc28af16dcccfc0",
+  measurementId: "G-W08KZRCLYV"
   };
 
   const app = initializeApp(firebaseConfig)
   export const auth = getAuth(app);
   export const  db = getFirestore(app)
+  export const storage = getStorage(app)

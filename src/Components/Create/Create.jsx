@@ -1,8 +1,16 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import "./Create.css";
-import Header from "../Header/Header";
 import { useState } from "react";
+import { FirebaseContext } from "../../firebase/FirebaseContext";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { addDoc, collection } from "firebase/firestore";
+import { UserContext } from "../../context/context";
+import { useNavigate } from "react-router-dom";
+
 const Create = () => {
+  const { storage, db } = useContext(FirebaseContext);
+  const { userD } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -38,19 +46,37 @@ const Create = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const date = new Date();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    if (formData.image) {
+      const storageRef = ref(storage, `images/${formData.image.name}`);
+      try {
+        await uploadBytes(storageRef, formData.image);
+        const downloadURL = await getDownloadURL(storageRef);
+        if (downloadURL) {
+          const addProduct = await addDoc(collection(db, "products"), {
+            name: formData.name,
+            category: formData.category,
+            price: formData.price,
+            imageUrl: downloadURL,
+            createAt: date.toDateString(),
+            uid: userD.uid,
+          });
+          if (addProduct) {
+            navigate("/");
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   return (
-    <Fragment>
-     
-      <Header />
-      
-     <div className="w-full flex justify-center create-form items-center ">
-
-     <div className="max-w-md p-6 bg-white rounded-lg shadow-md">
+    <div className="w-full flex justify-center create-form items-center ">
+      <div className="max-w-md p-6 bg-white rounded-lg shadow-md ">
         <h2 className="text-2xl font-bold mb-6 text-gray-800">Post Your Ad</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -106,6 +132,9 @@ const Create = () => {
           </div>
 
           <div>
+            {formData.image && (
+              <img src={URL.createObjectURL(formData.image)} alt="" />
+            )}
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Product Image
             </label>
@@ -126,10 +155,7 @@ const Create = () => {
           </button>
         </form>
       </div>
-
-     </div>
-      
-    </Fragment>
+    </div>
   );
 };
 
