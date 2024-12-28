@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UserContext ,ProductContext} from "./context";
+import { UserContext } from "./context";
 
 
 export const UserContextProvider = ({ children }) => {
@@ -12,15 +12,3 @@ export const UserContextProvider = ({ children }) => {
     );
   };
 
-export const ProductContextProvider = ({children})=>{
-  const [product,setProduct]= useState({});
-
-  return(
-
-    <ProductContext.Provider value={{product , setProduct}}>
-      {children}
-    </ProductContext.Provider>
-    
-  )
-
-}
